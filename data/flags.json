@@ -1,0 +1,102 @@
+[
+  {
+    "image": "us.svg",
+    "correct": "Statele Unite",
+    "options": ["Canada", "Statele Unite", "Australia", "Noua Zeelandă"]
+  },
+  {
+    "image": "ca.svg",
+    "correct": "Canada",
+    "options": ["Statele Unite", "Canada", "Marea Britanie", "Franța"]
+  },
+  {
+    "image": "fr.svg",
+    "correct": "Franța",
+    "options": ["Italia", "Franța", "Olanda", "Rusia"]
+  },
+  {
+    "image": "it.svg",
+    "correct": "Italia",
+    "options": ["Franța", "Irlanda", "Italia", "Spania"]
+  },
+  {
+    "image": "de.svg",
+    "correct": "Germania",
+    "options": ["Belgia", "Olanda", "Germania", "Luxemburg"]
+  },
+  {
+    "image": "be.svg",
+    "correct": "Belgia",
+    "options": ["Germania", "Franța", "Belgia", "Elveția"]
+  },
+  {
+    "image": "ru.svg",
+    "correct": "Rusia",
+    "options": ["Bulgaria", "Serbia", "Rusia", "Slovacia"]
+  },
+  {
+    "image": "jp.svg",
+    "correct": "Japonia",
+    "options": ["Coreea de Sud", "China", "Japonia", "Vietnam"]
+  },
+  {
+    "image": "kr.svg",
+    "correct": "Coreea de Sud",
+    "options": ["Japonia", "China", "Coreea de Sud", "Taiwan"]
+  },
+  {
+    "image": "br.svg",
+    "correct": "Brazilia",
+    "options": ["Argentina", "Brazilia", "Chile", "Peru"]
+  },
+  {
+    "image": "ar.svg",
+    "correct": "Argentina",
+    "options": ["Brazilia", "Argentina", "Uruguay", "Paraguay"]
+  },
+  {
+    "image": "mx.svg",
+    "correct": "Mexic",
+    "options": ["Columbia", "Spania", "Mexic", "Venezuela"]
+  },
+  {
+    "image": "au.svg",
+    "correct": "Australia",
+    "options": ["Noua Zeelandă", "Australia", "Fiji", "Samoa"]
+  },
+  {
+    "image": "nz.svg",
+    "correct": "Noua Zeelandă",
+    "options": ["Australia", "Noua Zeelandă", "Tonga", "Papua Noua Guinee"]
+  },
+  {
+    "image": "in.svg",
+    "correct": "India",
+    "options": ["Pakistan", "Bangladesh", "India", "Sri Lanka"]
+  },
+  {
+    "image": "pk.svg",
+    "correct": "Pakistan",
+    "options": ["India", "Afganistan", "Pakistan", "Iran"]
+  },
+  {
+    "image": "za.svg",
+    "correct": "Africa de Sud",
+    "options": ["Namibia", "Botswana", "Africa de Sud", "Zimbabwe"]
+  },
+  {
+    "image": "ng.svg",
+    "correct": "Nigeria",
+    "options": ["Ghana", "Nigeria", "Senegal", "Mali"]
+  },
+  {
+    "image": "eg.svg",
+    "correct": "Egipt",
+    "options": ["Sudan", "Egipt", "Libia", "Algeria"]
+  },
+  {
+    "image": "cn.svg",
+    "correct": "China",
+    "options": ["Taiwan", "China", "Coreea de Nord", "Vietnam"]
+  }
+]
