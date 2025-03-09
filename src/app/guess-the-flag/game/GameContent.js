@@ -20,6 +20,7 @@ export default function GameContent() {
   const [showNext, setShowNext] = useState(false);
   const [currentFlag, setCurrentFlag] = useState("");
   const [usedFlags, setUsedFlags] = useState(new Set());
+  const [lastCorrectAnswer, setLastCorrectAnswer] = useState(null); // Stochează ultima variantă corectă
   const [timeLeft, setTimeLeft] = useState(300);
   const [bonusTime, setBonusTime] = useState(null);
   const [timerActive, setTimerActive] = useState(false);
@@ -57,10 +58,10 @@ export default function GameContent() {
     }
 
     let shuffled = [...availableFlags].sort(() => Math.random() - 0.5);
-
+    
     let questionsArray = shuffled.map((country) => {
       let wrongAnswers = filteredCountries
-        .filter((c) => c.name !== country.name)
+        .filter((c) => c.name !== country.name && c.name !== lastCorrectAnswer) // 🔹 Excludem ultima variantă corectă
         .sort(() => Math.random() - 0.5)
         .slice(0, 3);
 
@@ -109,6 +110,7 @@ export default function GameContent() {
       }
 
       if (index + 1 < questions.length) {
+        setLastCorrectAnswer(questions[index].correct); // 🔹 Stocăm ultima variantă corectă
         setIndex((prev) => prev + 1);
         setCurrentFlag(questions[index + 1].image);
         setSelected(null);
@@ -179,40 +181,6 @@ export default function GameContent() {
           ))}
         </div>
       </div>
-
-      {/* Greseli și scor */}
-      <div className="flex justify-center items-center mt-10 gap-4">
-        <div className="flex items-center justify-center text-xl font-bold px-6 py-3 rounded-lg shadow-md w-36 text-center bg-red-700 text-white">
-          ❌ {3 - lives}/3
-        </div>
-        <div className="flex items-center justify-center text-xl font-bold px-6 py-3 rounded-lg shadow-md w-36 text-center bg-blue-700 text-white">
-          🎯 {score}
-        </div>
-      </div>
-
-      <style jsx>{`
-        @keyframes fadeInOut {
-          0% {
-            opacity: 0;
-            transform: translateY(-5px);
-          }
-          10% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-          90% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-          100% {
-            opacity: 0;
-            transform: translateY(-5px);
-          }
-        }
-        .animate-fadeInOut {
-          animation: fadeInOut 2s ease-in-out forwards;
-        }
-      `}</style>
     </div>
   );
 }
