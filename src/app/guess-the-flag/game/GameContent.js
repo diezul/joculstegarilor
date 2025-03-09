@@ -93,8 +93,8 @@ export default function GameContent() {
 
     if (isCorrect) {
       setScore((prev) => prev + 1);
-      setTimeLeft((prev) => prev + 5);
-      setBonusTime("+5 seconds");
+      setTimeLeft((prev) => prev + 3);
+      setBonusTime("+3 seconds");
 
       setTimeout(() => {
         setBonusTime(null);
@@ -104,7 +104,7 @@ export default function GameContent() {
     }
 
     setTimeout(() => {
-      if (lives - (answer !== correctAnswer ? 1 : 0) <= 0) {
+      if (lives - (isCorrect ? 0 : 1) <= 0) {  // FIX: Nu mai termină jocul la un răspuns corect
         router.push(`/guess-the-flag/results?score=${score}`);
         return;
       }
@@ -182,29 +182,15 @@ export default function GameContent() {
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes fadeInOut {
-          0% {
-            opacity: 0;
-            transform: translateY(-5px);
-          }
-          10% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-          90% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-          100% {
-            opacity: 0;
-            transform: translateY(-5px);
-          }
-        }
-        .animate-fadeInOut {
-          animation: fadeInOut 2s ease-in-out forwards;
-        }
-      `}</style>
+      {/* Greseli și scor */}
+      <div className="flex justify-center items-center mt-10 gap-4">
+        <div className="flex items-center justify-center text-xl font-bold px-6 py-3 rounded-lg shadow-md w-36 text-center bg-red-700 text-white">
+          ❌ {3 - lives}/3
+        </div>
+        <div className="flex items-center justify-center text-xl font-bold px-6 py-3 rounded-lg shadow-md w-36 text-center bg-blue-700 text-white">
+          🎯 {score}
+        </div>
+      </div>
     </div>
   );
 }
