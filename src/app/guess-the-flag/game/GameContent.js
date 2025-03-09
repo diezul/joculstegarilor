@@ -81,46 +81,50 @@ export default function GameContent() {
     }
   };
 
-  const handleAnswer = (answer) => {
-    if (!timerActive) setTimerActive(true);
-    if (showNext) return;
+const [mistakes, setMistakes] = useState([]); // Stocăm greșelile
 
-    const isCorrect = answer === questions[index].correct;
+const handleAnswer = (answer) => {
+  if (!timerActive) setTimerActive(true);
+  if (showNext) return;
 
-    setSelected(answer);
-    setCorrectAnswer(questions[index].correct);
-    setShowNext(true);
+  const isCorrect = answer === questions[index].correct;
 
-    if (isCorrect) {
-      setScore((prev) => prev + 1);
-      setTimeLeft((prev) => prev + 3);
-      setBonusTime("+3 seconds");
+  setSelected(answer);
+  setCorrectAnswer(questions[index].correct);
+  setShowNext(true);
 
-      setTimeout(() => {
-        setBonusTime(null);
-      }, 2000);
-    } else {
-      setLives((prev) => prev - 1);
-    }
+  if (isCorrect) {
+    setScore((prev) => prev + 1);
+    setTimeLeft((prev) => prev + 3);
+    setBonusTime("+3 seconds");
 
     setTimeout(() => {
-      if (lives - (isCorrect ? 0 : 1) <= 0) {  // FIX: Nu mai termină jocul la un răspuns corect
-        router.push(`/guess-the-flag/results?score=${score}`);
-        return;
-      }
+      setBonusTime(null);
+    }, 2000);
+  } else {
+    setLives((prev) => prev - 1);
+    setMistakes((prev) => [...prev, questions[index].correct]); // 🔹 Salvăm greșeala
+  }
 
-      if (index + 1 < questions.length) {
-        setLastCorrectAnswer(questions[index].correct);
-        setIndex((prev) => prev + 1);
-        setCurrentFlag(questions[index + 1].image);
-        setSelected(null);
-        setCorrectAnswer(null);
-        setShowNext(false);
-      } else {
-        router.push(`/guess-the-flag/results?score=${score}`);
-      }
-    }, 1500);
-  };
+  setTimeout(() => {
+    if (lives - (isCorrect ? 0 : 1) <= 0) {  // FIX: Nu termină jocul la un răspuns corect
+      router.push(`/guess-the-flag/results?score=${score}&mistakes=${JSON.stringify(mistakes)}`);
+      return;
+    }
+
+    if (index + 1 < questions.length) {
+      setLastCorrectAnswer(questions[index].correct);
+      setIndex((prev) => prev + 1);
+      setCurrentFlag(questions[index + 1].image);
+      setSelected(null);
+      setCorrectAnswer(null);
+      setShowNext(false);
+    } else {
+      router.push(`/guess-the-flag/results?score=${score}&mistakes=${JSON.stringify(mistakes)}`);
+    }
+  }, 1500);
+};
+
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-900 text-white transition-all duration-500">
