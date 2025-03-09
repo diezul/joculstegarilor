@@ -9,7 +9,7 @@ import countriesData from "../../../../data/countries.json";
 export default function GameContent() {
   const searchParams = useSearchParams();
   const selectedContinents = searchParams.get("continents")?.split(",") || [];
-  
+
   const router = useRouter();
   const [questions, setQuestions] = useState([]);
   const [index, setIndex] = useState(0);
@@ -20,7 +20,7 @@ export default function GameContent() {
   const [showNext, setShowNext] = useState(false);
   const [currentFlag, setCurrentFlag] = useState("");
   const [usedFlags, setUsedFlags] = useState(new Set());
-  const [lastCorrectAnswer, setLastCorrectAnswer] = useState(null); // Stochează ultima variantă corectă
+  const [lastCorrectAnswer, setLastCorrectAnswer] = useState(null);
   const [timeLeft, setTimeLeft] = useState(300);
   const [bonusTime, setBonusTime] = useState(null);
   const [timerActive, setTimerActive] = useState(false);
@@ -50,7 +50,7 @@ export default function GameContent() {
       selectedContinents.includes(c.continent)
     );
 
-    let availableFlags = filteredCountries.filter(c => !usedFlags.has(c.code));
+    let availableFlags = filteredCountries.filter((c) => !usedFlags.has(c.code));
 
     if (availableFlags.length === 0) {
       router.push(`/guess-the-flag/results?score=${score}`);
@@ -58,10 +58,10 @@ export default function GameContent() {
     }
 
     let shuffled = [...availableFlags].sort(() => Math.random() - 0.5);
-    
+
     let questionsArray = shuffled.map((country) => {
       let wrongAnswers = filteredCountries
-        .filter((c) => c.name !== country.name && c.name !== lastCorrectAnswer) // 🔹 Excludem ultima variantă corectă
+        .filter((c) => c.name !== country.name && c.name !== lastCorrectAnswer)
         .sort(() => Math.random() - 0.5)
         .slice(0, 3);
 
@@ -93,8 +93,8 @@ export default function GameContent() {
 
     if (isCorrect) {
       setScore((prev) => prev + 1);
-      setTimeLeft((prev) => prev + 3);
-      setBonusTime("+3 seconds");
+      setTimeLeft((prev) => prev + 5);
+      setBonusTime("+5 seconds");
 
       setTimeout(() => {
         setBonusTime(null);
@@ -110,7 +110,7 @@ export default function GameContent() {
       }
 
       if (index + 1 < questions.length) {
-        setLastCorrectAnswer(questions[index].correct); // 🔹 Stocăm ultima variantă corectă
+        setLastCorrectAnswer(questions[index].correct);
         setIndex((prev) => prev + 1);
         setCurrentFlag(questions[index + 1].image);
         setSelected(null);
@@ -132,7 +132,7 @@ export default function GameContent() {
       <div className="relative text-lg mb-6 flex items-center gap-4">
         <span>⏳ Time left: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, "0")}</span>
         {bonusTime && (
-          <span className="text-green-400 text-sm opacity-0 animate-fadeInOut">
+          <span className="text-green-400 text-sm animate-fadeInOut">
             {bonusTime}
           </span>
         )}
@@ -181,6 +181,30 @@ export default function GameContent() {
           ))}
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes fadeInOut {
+          0% {
+            opacity: 0;
+            transform: translateY(-5px);
+          }
+          10% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          90% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(-5px);
+          }
+        }
+        .animate-fadeInOut {
+          animation: fadeInOut 2s ease-in-out forwards;
+        }
+      `}</style>
     </div>
   );
 }
