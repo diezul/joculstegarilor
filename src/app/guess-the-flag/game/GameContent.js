@@ -26,7 +26,7 @@ export default function GameContent() {
   const [timerActive, setTimerActive] = useState(false);
   const [fiftyFiftyUsed, setFiftyFiftyUsed] = useState(false);
   const [disabledOptions, setDisabledOptions] = useState([]);
-  const [mistakes, setMistakes] = useState([]); // Stocăm greșelile
+  const [mistakes, setMistakes] = useState([]);
 
   useEffect(() => {
     generateQuestions();
@@ -163,6 +163,28 @@ export default function GameContent() {
         )}
       </div>
 
+      {/* Steag */}
+      <div className="relative flex items-center justify-center px-6 mb-6" style={{ height: "250px", maxWidth: "100%" }}>
+        <Image
+          src={`/flags/${currentFlag}`}
+          alt="Flag"
+          width={400}
+          height={250}
+          className="object-contain h-full w-auto max-w-full"
+          priority
+        />
+      </div>
+
+      {/* 50/50 Button */}
+      {!fiftyFiftyUsed && (
+        <button
+          onClick={useFiftyFifty}
+          className="mb-4 px-6 py-3 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-600 transition"
+        >
+          🎲 Use 50/50
+        </button>
+      )}
+
       {/* Variante de răspuns */}
       <div className="grid grid-cols-2 gap-4 w-[350px]">
         {questions[index]?.options.map((option) => (
@@ -185,16 +207,6 @@ export default function GameContent() {
             {option}
           </button>
         ))}
-      </div>
-
-      {/* Badge-uri pentru vieți și scor */}
-      <div className="flex justify-center items-center mt-10 gap-4">
-        <div className="flex items-center text-xl font-bold px-4 py-3 rounded-lg shadow-md w-36 bg-red-700 text-white">
-          ❌ {3 - lives}/3
-        </div>
-        <div className="flex items-center text-xl font-bold px-4 py-3 rounded-lg shadow-md w-36 bg-blue-700 text-white">
-          🎯 {score}
-        </div>
       </div>
     </div>
   );
