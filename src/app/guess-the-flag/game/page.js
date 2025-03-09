@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import countriesData from "../../../../data/countries.json";
 
-export default function Game() {
-  const router = useRouter();
+function GameContent() {
   const searchParams = useSearchParams();
   const selectedContinents = searchParams.get("continents")?.split(",") || [];
-
+  
+  const router = useRouter();
   const [questions, setQuestions] = useState([]);
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -124,5 +125,13 @@ export default function Game() {
         ))}
       </div>
     </div>
+  );
+}
+
+export default function GamePage() {
+  return (
+    <Suspense fallback={<div className="text-white">Loading...</div>}>
+      <GameContent />
+    </Suspense>
   );
 }
