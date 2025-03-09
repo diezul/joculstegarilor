@@ -83,54 +83,57 @@ export default function GameContent() {
 
   const [mistakes, setMistakes] = useState([]); // Stocăm greșelile
 
-  const handleAnswer = (answer) => {
-    if (!timerActive) setTimerActive(true);
-    if (showNext) return;
-  
-    const isCorrect = answer === questions[index].correct;
-  
-    setSelected(answer);
-    setCorrectAnswer(questions[index].correct);
-    setShowNext(true);
-  
-    if (isCorrect) {
-      setScore((prev) => prev + 1);
-      setTimeLeft((prev) => prev + 3);
-      setBonusTime("+3 seconds");
-  
-      setTimeout(() => {
-        setBonusTime(null);
-      }, 2000);
-    } else {
-      setLives((prev) => prev - 1);
-      setMistakes((prev) => [
-        ...prev,
-        {
-          flag: questions[index].image, // Steagul întrebării
-          correctAnswer: questions[index].correct, // Varianta corectă
-          wrongAnswer: answer, // Răspunsul greșit al jucătorului
-        }
-      ]);
-    }
-  
+const handleAnswer = (answer) => {
+  if (!timerActive) setTimerActive(true);
+  if (showNext) return;
+
+  const isCorrect = answer === questions[index].correct;
+
+  setSelected(answer);
+  setCorrectAnswer(questions[index].correct);
+  setShowNext(true);
+
+  let updatedMistakes = [...mistakes]; // Copie a greșelilor existente
+
+  if (isCorrect) {
+    setScore((prev) => prev + 1);
+    setTimeLeft((prev) => prev + 3);
+    setBonusTime("+3 seconds");
+
     setTimeout(() => {
-      if (lives - (isCorrect ? 0 : 1) <= 0) {
-        router.push(`/guess-the-flag/results?score=${score}&mistakes=${encodeURIComponent(JSON.stringify(mistakes))}`);
-        return;
-      }
-  
-      if (index + 1 < questions.length) {
-        setLastCorrectAnswer(questions[index].correct);
-        setIndex((prev) => prev + 1);
-        setCurrentFlag(questions[index + 1].image);
-        setSelected(null);
-        setCorrectAnswer(null);
-        setShowNext(false);
-      } else {
-        router.push(`/guess-the-flag/results?score=${score}&mistakes=${encodeURIComponent(JSON.stringify(mistakes))}`);
-      }
-    }, 1500);
-  };
+      setBonusTime(null);
+    }, 2000);
+  } else {
+    updatedMistakes.push({
+      flag: questions[index].image, // Steagul întrebării
+      correctAnswer: questions[index].correct, // Varianta corectă
+      wrongAnswer: answer, // Răspunsul greșit
+    });
+
+    setLives((prev) => prev - 1);
+  }
+
+  setTimeout(() => {
+    if (lives - (isCorrect ? 0 : 1) <= 0) {
+      // Stocăm ultima greșeală în query params
+      router.push(`/guess-the-flag/results?score=${score}&mistakes=${encodeURIComponent(JSON.stringify(updatedMistakes))}`);
+      return;
+    }
+
+    if (index + 1 < questions.length) {
+      setLastCorrectAnswer(questions[index].correct);
+      setIndex((prev) => prev + 1);
+      setCurrentFlag(questions[index + 1].image);
+      setSelected(null);
+      setCorrectAnswer(null);
+      setShowNext(false);
+      setMistakes(updatedMistakes); // Salvăm array-ul complet în state
+    } else {
+      router.push(`/guess-the-flag/results?score=${score}&mistakes=${encodeURIComponent(JSON.stringify(updatedMistakes))}`);
+    }
+  }, 1500);
+};
+
   
 
 
