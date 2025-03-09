@@ -20,10 +20,29 @@ export default function GameContent() {
   const [showNext, setShowNext] = useState(false);
   const [currentFlag, setCurrentFlag] = useState("");
   const [usedFlags, setUsedFlags] = useState(new Set());
+  const [timeLeft, setTimeLeft] = useState(300);
+  const [bonusTime, setBonusTime] = useState(null);
+  const [timerActive, setTimerActive] = useState(false);
 
   useEffect(() => {
     generateQuestions();
   }, []);
+
+  useEffect(() => {
+    if (timerActive) {
+      const timer = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 0) {
+            clearInterval(timer);
+            router.push(`/guess-the-flag/results?score=${score}`);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [timerActive]);
 
   const generateQuestions = () => {
     let filteredCountries = countriesData.filter((c) =>
@@ -62,6 +81,7 @@ export default function GameContent() {
   };
 
   const handleAnswer = (answer) => {
+    if (!timerActive) setTimerActive(true);
     if (showNext) return;
 
     const isCorrect = answer === questions[index].correct;
@@ -70,14 +90,20 @@ export default function GameContent() {
     setCorrectAnswer(questions[index].correct);
     setShowNext(true);
 
-    setTimeout(() => {
-      if (!isCorrect) {
-        setLives((prevLives) => prevLives - 1);
-      } else {
-        setScore((prevScore) => prevScore + 1);
-      }
+    if (isCorrect) {
+      setScore((prev) => prev + 1);
+      setTimeLeft((prev) => prev + 3);
+      setBonusTime("+3 secunde");
 
-      if (lives - (isCorrect ? 0 : 1) <= 0) {
+      setTimeout(() => {
+        setBonusTime(null);
+      }, 2000);
+    } else {
+      setLives((prev) => prev - 1);
+    }
+
+    setTimeout(() => {
+      if (lives - (answer !== correctAnswer ? 1 : 0) <= 0) {
         router.push(`/guess-the-flag/results?score=${score}`);
         return;
       }
@@ -96,10 +122,22 @@ export default function GameContent() {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-900 text-white transition-all duration-500">
-      <h1 className="text-3xl font-bold mb-4">🌍 Guess the Flag</h1>
+      <h1 className="text-4xl font-bold mb-6 flex items-center gap-2">
+        🌍 Jocul Stegarilor
+      </h1>
 
-      {/* Container pentru steag - Height fix, width cu padding lateral */}
-      <div className="relative flex items-center justify-center mb-6 px-6" style={{ height: "250px", maxWidth: "100%" }}>
+      {/* Timer */}
+      <div className="relative text-lg mb-4 flex flex-col items-center">
+        <span>⏳ Timp rămas: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, "0")}</span>
+        {bonusTime && (
+          <span className="text-green-400 text-sm opacity-0 animate-fadeInOut">
+            {bonusTime}
+          </span>
+        )}
+      </div>
+
+      {/* Steag fără background */}
+      <div className="relative flex items-center justify-center px-6" style={{ height: "250px", maxWidth: "100%" }}>
         <Image
           src={`/flags/${currentFlag}`}
           alt="Flag"
@@ -111,47 +149,70 @@ export default function GameContent() {
       </div>
 
       {/* Container invizibil pentru variante - previne mutarea elementelor */}
-<div className="flex flex-col items-center justify-center w-full mb-6" style={{ minHeight: "120px" }}>
-  <div className="grid grid-cols-2 gap-4 w-[350px]">
-    {questions[index]?.options.map((option) => (
-      <button
-        key={option}
-        onClick={() => handleAnswer(option)}
-        className={`p-4 rounded-lg text-lg font-semibold transition-all duration-500 ease-in-out text-center cursor-pointer ${
-          showNext
-            ? option === correctAnswer
-              ? "bg-green-500 text-white"
-              : option === selected
-              ? "bg-red-500 text-white"
-              : "bg-gray-700 text-white"
-            : "bg-gray-800 hover:bg-gray-700 text-white"
-        }`}
-        style={{
-          minWidth: "150px",
-          maxWidth: "160px",
-          wordBreak: "break-word",
-          minHeight: "88px", // 👈 Toate variantele de răspuns au aceeași înălțime
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        {option}
-      </button>
-    ))}
-  </div>
-</div>
-
+      <div className="flex flex-col items-center justify-center w-full mb-6" style={{ minHeight: "120px" }}>
+        <div className="grid grid-cols-2 gap-4 w-[350px]">
+          {questions[index]?.options.map((option) => (
+            <button
+              key={option}
+              onClick={() => handleAnswer(option)}
+              className={`p-4 rounded-lg text-lg font-semibold transition-all duration-500 ease-in-out text-center cursor-pointer ${
+                showNext
+                  ? option === correctAnswer
+                    ? "bg-green-500 text-white"
+                    : option === selected
+                    ? "bg-red-500 text-white"
+                    : "bg-gray-700 text-white"
+                  : "bg-gray-800 hover:bg-gray-700 text-white"
+              }`}
+              style={{
+                minWidth: "150px",
+                maxWidth: "160px",
+                wordBreak: "break-word",
+                minHeight: "88px", // Toate variantele de răspuns au aceeași înălțime
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      </div>
 
       {/* Greseli și scor */}
-      <div className="flex justify-between items-center mt-10 w-[350px]">
-        <div className="flex items-center justify-center text-xl font-bold px-4 py-3 rounded-lg shadow-md w-36 bg-red-700 text-white">
+      <div className="flex justify-center items-center mt-10 gap-4">
+        <div className="flex items-center justify-center text-xl font-bold px-6 py-3 rounded-lg shadow-md w-36 text-center bg-red-700 text-white">
           ❌ {3 - lives}/3
         </div>
-        <div className="flex items-center justify-center text-xl font-bold px-4 py-3 rounded-lg shadow-md w-36 bg-blue-700 text-white">
+        <div className="flex items-center justify-center text-xl font-bold px-6 py-3 rounded-lg shadow-md w-36 text-center bg-blue-700 text-white">
           🎯 {score}
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes fadeInOut {
+          0% {
+            opacity: 0;
+            transform: translateY(-5px);
+          }
+          10% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          90% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(-5px);
+          }
+        }
+        .animate-fadeInOut {
+          animation: fadeInOut 2s ease-in-out forwards;
+        }
+      `}</style>
     </div>
   );
 }
