@@ -98,42 +98,44 @@ function GameContent() {
     <div className="flex flex-col items-center justify-center h-screen bg-gray-900 text-white transition-all duration-500">
       <h1 className="text-3xl font-bold mb-4">🌍 Guess the Flag</h1>
 
-      {/* Container steaguri - Height fix, lățime auto */}
-      <div className="relative flex items-center justify-center mb-6" style={{ height: "250px" }}>
+      {/* Container pentru steag - Height fix, width cu padding lateral */}
+      <div className="relative flex items-center justify-center mb-6 px-6" style={{ height: "250px", maxWidth: "100%" }}>
         <Image
           src={`/flags/${currentFlag}`}
           alt="Flag"
           width={400}
           height={250}
-          className="object-contain h-full w-auto"
+          className="object-contain h-full w-auto max-w-full"
           priority
         />
       </div>
 
-      {/* Butoane cu răspunsurile */}
-      <div className="grid grid-cols-2 gap-4 w-[350px]">
-        {questions[index]?.options.map((option) => (
-          <button
-            key={option}
-            onClick={() => handleAnswer(option)}
-            className={`p-4 rounded-lg text-lg font-semibold transition-all duration-500 ease-in-out text-center cursor-pointer ${
-              showNext
-                ? option === correctAnswer
-                  ? "bg-green-500 text-white"
-                  : option === selected
-                  ? "bg-red-500 text-white"
-                  : "bg-gray-700 text-white"
-                : "bg-gray-800 hover:bg-gray-700 text-white"
-            }`}
-            style={{
-              minWidth: "150px",
-              maxWidth: "160px",
-              wordBreak: "break-word",
-            }}
-          >
-            {option}
-          </button>
-        ))}
+      {/* Container invizibil pentru variante - previne mutarea elementelor */}
+      <div className="flex flex-col items-center justify-center w-full mb-6" style={{ minHeight: "120px" }}>
+        <div className="grid grid-cols-2 gap-4 w-[350px]">
+          {questions[index]?.options.map((option) => (
+            <button
+              key={option}
+              onClick={() => handleAnswer(option)}
+              className={`p-4 rounded-lg text-lg font-semibold transition-all duration-500 ease-in-out text-center cursor-pointer ${
+                showNext
+                  ? option === correctAnswer
+                    ? "bg-green-500 text-white"
+                    : option === selected
+                    ? "bg-red-500 text-white"
+                    : "bg-gray-700 text-white"
+                  : "bg-gray-800 hover:bg-gray-700 text-white"
+              }`}
+              style={{
+                minWidth: "150px",
+                maxWidth: "160px",
+                wordBreak: "break-word",
+              }}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Greseli și scor */}
