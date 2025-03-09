@@ -93,7 +93,7 @@ export default function GameContent() {
     if (isCorrect) {
       setScore((prev) => prev + 1);
       setTimeLeft((prev) => prev + 3);
-      setBonusTime("+3 secunde");
+      setBonusTime("+3 seconds");
 
       setTimeout(() => {
         setBonusTime(null);
@@ -123,12 +123,12 @@ export default function GameContent() {
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-900 text-white transition-all duration-500">
       <h1 className="text-4xl font-bold mb-6 flex items-center gap-2">
-        🌍 Jocul Stegarilor
+        🌍 Guess the Flag
       </h1>
 
       {/* Timer */}
-      <div className="relative text-lg mb-4 flex flex-col items-center">
-        <span>⏳ Timp rămas: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, "0")}</span>
+      <div className="relative text-lg mb-6 flex items-center gap-4">
+        <span>⏳ Time left: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, "0")}</span>
         {bonusTime && (
           <span className="text-green-400 text-sm opacity-0 animate-fadeInOut">
             {bonusTime}
@@ -136,8 +136,8 @@ export default function GameContent() {
         )}
       </div>
 
-      {/* Steag fără background */}
-      <div className="relative flex items-center justify-center px-6" style={{ height: "250px", maxWidth: "100%" }}>
+      {/* Steag - spațiere mărită față de răspunsuri */}
+      <div className="relative flex items-center justify-center px-6 mb-6" style={{ height: "250px", maxWidth: "100%" }}>
         <Image
           src={`/flags/${currentFlag}`}
           alt="Flag"
@@ -149,7 +149,7 @@ export default function GameContent() {
       </div>
 
       {/* Container invizibil pentru variante - previne mutarea elementelor */}
-      <div className="flex flex-col items-center justify-center w-full mb-6" style={{ minHeight: "120px" }}>
+      <div className="flex flex-col items-center justify-center w-full mb-10" style={{ minHeight: "120px" }}>
         <div className="grid grid-cols-2 gap-4 w-[350px]">
           {questions[index]?.options.map((option) => (
             <button
@@ -168,7 +168,7 @@ export default function GameContent() {
                 minWidth: "150px",
                 maxWidth: "160px",
                 wordBreak: "break-word",
-                minHeight: "88px", // Toate variantele de răspuns au aceeași înălțime
+                minHeight: "88px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center"
