@@ -19,6 +19,7 @@ function GameContent() {
   const [correctAnswer, setCorrectAnswer] = useState(null);
   const [showNext, setShowNext] = useState(false);
   const [currentFlag, setCurrentFlag] = useState("");
+  const [usedFlags, setUsedFlags] = useState(new Set());
 
   useEffect(() => {
     generateQuestions();
@@ -29,7 +30,14 @@ function GameContent() {
       selectedContinents.includes(c.continent)
     );
 
-    let shuffled = [...filteredCountries].sort(() => Math.random() - 0.5);
+    let availableFlags = filteredCountries.filter(c => !usedFlags.has(c.code));
+
+    if (availableFlags.length === 0) {
+      router.push(`/guess-the-flag/results?score=${score}`);
+      return;
+    }
+
+    let shuffled = [...availableFlags].sort(() => Math.random() - 0.5);
 
     let questionsArray = shuffled.map((country) => {
       let wrongAnswers = filteredCountries
@@ -47,7 +55,10 @@ function GameContent() {
     });
 
     setQuestions(questionsArray);
-    if (questionsArray.length) setCurrentFlag(questionsArray[0].image);
+    if (questionsArray.length) {
+      setCurrentFlag(questionsArray[0].image);
+      setUsedFlags(new Set([...usedFlags, questionsArray[0].image]));
+    }
   };
 
   const handleAnswer = (answer) => {
@@ -67,7 +78,7 @@ function GameContent() {
       }
 
       if (lives - (isCorrect ? 0 : 1) <= 0) {
-        router.push(`/results?score=${score}`);
+        router.push(`/guess-the-flag/results?score=${score}`);
         return;
       }
 
@@ -78,7 +89,7 @@ function GameContent() {
         setCorrectAnswer(null);
         setShowNext(false);
       } else {
-        router.push(`/results?score=${score}`);
+        router.push(`/guess-the-flag/results?score=${score}`);
       }
     }, 1500);
   };
