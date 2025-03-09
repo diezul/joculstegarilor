@@ -97,20 +97,20 @@ function GameContent() {
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-900 text-white transition-all duration-500">
       <h1 className="text-3xl font-bold mb-4">🌍 Guess the Flag</h1>
-      <p className="text-lg">🏆 Score: {score}</p>
-      <p className="text-lg">❌ Lives: {3 - lives}/3</p>
 
-      <div className="relative flex items-center justify-center h-[250px] w-auto mb-6">
+      {/* Container steaguri - Height fix, lățime auto */}
+      <div className="relative flex items-center justify-center mb-6" style={{ height: "250px" }}>
         <Image
           src={`/flags/${currentFlag}`}
           alt="Flag"
           width={400}
           height={250}
-          className="object-contain h-[250px] w-auto"
+          className="object-contain h-full w-auto"
           priority
         />
       </div>
 
+      {/* Butoane cu răspunsurile */}
       <div className="grid grid-cols-2 gap-4 w-[350px]">
         {questions[index]?.options.map((option) => (
           <button
@@ -134,6 +134,16 @@ function GameContent() {
             {option}
           </button>
         ))}
+      </div>
+
+      {/* Greseli și scor */}
+      <div className="flex justify-between items-center mt-10 w-[350px]">
+        <div className="flex items-center justify-center text-xl font-bold px-4 py-3 rounded-lg shadow-md w-36 bg-red-700 text-white">
+          ❌ {3 - lives}/3
+        </div>
+        <div className="flex items-center justify-center text-xl font-bold px-4 py-3 rounded-lg shadow-md w-36 bg-blue-700 text-white">
+          🎯 {score}
+        </div>
       </div>
     </div>
   );
