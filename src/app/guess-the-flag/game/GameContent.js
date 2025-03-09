@@ -26,6 +26,7 @@ export default function GameContent() {
   const [timerActive, setTimerActive] = useState(false);
   const [fiftyFiftyUsed, setFiftyFiftyUsed] = useState(false);
   const [disabledOptions, setDisabledOptions] = useState([]);
+  const [mistakes, setMistakes] = useState([]); // Stocăm greșelile
 
   useEffect(() => {
     generateQuestions();
@@ -37,7 +38,7 @@ export default function GameContent() {
         setTimeLeft((prev) => {
           if (prev <= 0) {
             clearInterval(timer);
-            router.push(`/guess-the-flag/results?score=${score}`);
+            router.push(`/guess-the-flag/results?score=${score}&mistakes=${encodeURIComponent(JSON.stringify(mistakes))}`);
             return 0;
           }
           return prev - 1;
@@ -55,7 +56,7 @@ export default function GameContent() {
     let availableFlags = filteredCountries.filter((c) => !usedFlags.has(c.code));
 
     if (availableFlags.length === 0) {
-      router.push(`/guess-the-flag/results?score=${score}`);
+      router.push(`/guess-the-flag/results?score=${score}&mistakes=${encodeURIComponent(JSON.stringify(mistakes))}`);
       return;
     }
 
@@ -85,8 +86,6 @@ export default function GameContent() {
     }
   };
 
-  const [mistakes, setMistakes] = useState([]);
-
   const handleAnswer = (answer) => {
     if (!timerActive) setTimerActive(true);
     if (showNext) return;
@@ -115,6 +114,7 @@ export default function GameContent() {
       });
 
       setLives((prev) => prev - 1);
+      setMistakes(updatedMistakes);
     }
 
     setTimeout(() => {
@@ -163,28 +163,6 @@ export default function GameContent() {
         )}
       </div>
 
-      {/* Steag */}
-      <div className="relative flex items-center justify-center px-6 mb-6" style={{ height: "250px", maxWidth: "100%" }}>
-        <Image
-          src={`/flags/${currentFlag}`}
-          alt="Flag"
-          width={400}
-          height={250}
-          className="object-contain h-full w-auto max-w-full"
-          priority
-        />
-      </div>
-
-      {/* 50/50 Button */}
-      {!fiftyFiftyUsed && (
-        <button
-          onClick={useFiftyFifty}
-          className="mb-4 px-6 py-3 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-600 transition"
-        >
-          🎲 Use 50/50
-        </button>
-      )}
-
       {/* Variante de răspuns */}
       <div className="grid grid-cols-2 gap-4 w-[350px]">
         {questions[index]?.options.map((option) => (
@@ -200,8 +178,9 @@ export default function GameContent() {
                   ? "bg-red-500 text-white"
                   : "bg-gray-700 text-white"
                 : disabledOptions.includes(option)
-                ? "bg-gray-500 text-gray-300 cursor-not-allowed"
+                ? "text-[oklch(0.82 0 0 / 0.37)] bg-[oklch(0.46 0.02 264.36 / 0.82)] cursor-not-allowed"
                 : "bg-gray-800 hover:bg-gray-700 text-white"}`}
+            style={{ minHeight: "88px" }}
           >
             {option}
           </button>
