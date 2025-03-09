@@ -1,12 +1,12 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Suspense, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import countriesData from "../../../../data/countries.json";
 
-function GameContent() {
+export default function GameContent() {
   const searchParams = useSearchParams();
   const selectedContinents = searchParams.get("continents")?.split(",") || [];
   
@@ -148,13 +148,5 @@ function GameContent() {
         </div>
       </div>
     </div>
-  );
-}
-
-export default function GamePage() {
-  return (
-    <Suspense fallback={<div className="text-white">Loading...</div>}>
-      <GameContent />
-    </Suspense>
   );
 }
