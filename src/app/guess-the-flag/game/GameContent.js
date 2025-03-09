@@ -111,32 +111,37 @@ export default function GameContent() {
       </div>
 
       {/* Container invizibil pentru variante - previne mutarea elementelor */}
-      <div className="flex flex-col items-center justify-center w-full mb-6" style={{ minHeight: "120px" }}>
-        <div className="grid grid-cols-2 gap-4 w-[350px]">
-          {questions[index]?.options.map((option) => (
-            <button
-              key={option}
-              onClick={() => handleAnswer(option)}
-              className={`p-4 rounded-lg text-lg font-semibold transition-all duration-500 ease-in-out text-center cursor-pointer ${
-                showNext
-                  ? option === correctAnswer
-                    ? "bg-green-500 text-white"
-                    : option === selected
-                    ? "bg-red-500 text-white"
-                    : "bg-gray-700 text-white"
-                  : "bg-gray-800 hover:bg-gray-700 text-white"
-              }`}
-              style={{
-                minWidth: "150px",
-                maxWidth: "160px",
-                wordBreak: "break-word",
-              }}
-            >
-              {option}
-            </button>
-          ))}
-        </div>
-      </div>
+<div className="flex flex-col items-center justify-center w-full mb-6" style={{ minHeight: "120px" }}>
+  <div className="grid grid-cols-2 gap-4 w-[350px]">
+    {questions[index]?.options.map((option) => (
+      <button
+        key={option}
+        onClick={() => handleAnswer(option)}
+        className={`p-4 rounded-lg text-lg font-semibold transition-all duration-500 ease-in-out text-center cursor-pointer ${
+          showNext
+            ? option === correctAnswer
+              ? "bg-green-500 text-white"
+              : option === selected
+              ? "bg-red-500 text-white"
+              : "bg-gray-700 text-white"
+            : "bg-gray-800 hover:bg-gray-700 text-white"
+        }`}
+        style={{
+          minWidth: "150px",
+          maxWidth: "160px",
+          wordBreak: "break-word",
+          minHeight: "60px", // 👈 Toate variantele de răspuns au aceeași înălțime
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        {option}
+      </button>
+    ))}
+  </div>
+</div>
+
 
       {/* Greseli și scor */}
       <div className="flex justify-between items-center mt-10 w-[350px]">
