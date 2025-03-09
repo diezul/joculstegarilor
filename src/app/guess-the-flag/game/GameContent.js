@@ -24,6 +24,8 @@ export default function GameContent() {
   const [timeLeft, setTimeLeft] = useState(300);
   const [bonusTime, setBonusTime] = useState(null);
   const [timerActive, setTimerActive] = useState(false);
+  const [fiftyFiftyUsed, setFiftyFiftyUsed] = useState(false);
+  const [disabledOptions, setDisabledOptions] = useState([]); // Pentru 50/50
 
   useEffect(() => {
     generateQuestions();
@@ -60,7 +62,10 @@ export default function GameContent() {
     let shuffled = [...availableFlags].sort(() => Math.random() - 0.5);
 
     let questionsArray = shuffled.map((country) => {
-      let wrongAnswers = filteredCountries
+      // Filtrăm doar țările din același continent ca răspunsul corect
+      let sameContinentCountries = filteredCountries.filter((c) => c.continent === country.continent);
+      
+      let wrongAnswers = sameContinentCountries
         .filter((c) => c.name !== country.name && c.name !== lastCorrectAnswer)
         .sort(() => Math.random() - 0.5)
         .slice(0, 3);
@@ -81,61 +86,67 @@ export default function GameContent() {
     }
   };
 
-  const [mistakes, setMistakes] = useState([]); // Stocăm greșelile
+  const [mistakes, setMistakes] = useState([]);
 
-const handleAnswer = (answer) => {
-  if (!timerActive) setTimerActive(true);
-  if (showNext) return;
+  const handleAnswer = (answer) => {
+    if (!timerActive) setTimerActive(true);
+    if (showNext) return;
 
-  const isCorrect = answer === questions[index].correct;
+    const isCorrect = answer === questions[index].correct;
 
-  setSelected(answer);
-  setCorrectAnswer(questions[index].correct);
-  setShowNext(true);
+    setSelected(answer);
+    setCorrectAnswer(questions[index].correct);
+    setShowNext(true);
 
-  let updatedMistakes = [...mistakes]; // Copie a greșelilor existente
+    let updatedMistakes = [...mistakes];
 
-  if (isCorrect) {
-    setScore((prev) => prev + 1);
-    setTimeLeft((prev) => prev + 3);
-    setBonusTime("+3 seconds");
+    if (isCorrect) {
+      setScore((prev) => prev + 1);
+      setTimeLeft((prev) => prev + 3);
+      setBonusTime("+3 seconds");
+
+      setTimeout(() => {
+        setBonusTime(null);
+      }, 2000);
+    } else {
+      updatedMistakes.push({
+        flag: questions[index].image,
+        correctAnswer: questions[index].correct,
+        wrongAnswer: answer,
+      });
+
+      setLives((prev) => prev - 1);
+    }
 
     setTimeout(() => {
-      setBonusTime(null);
-    }, 2000);
-  } else {
-    updatedMistakes.push({
-      flag: questions[index].image, // Steagul întrebării
-      correctAnswer: questions[index].correct, // Varianta corectă
-      wrongAnswer: answer, // Răspunsul greșit
-    });
+      if (lives - (isCorrect ? 0 : 1) <= 0) {
+        router.push(`/guess-the-flag/results?score=${score}&mistakes=${encodeURIComponent(JSON.stringify(updatedMistakes))}`);
+        return;
+      }
 
-    setLives((prev) => prev - 1);
-  }
+      if (index + 1 < questions.length) {
+        setLastCorrectAnswer(questions[index].correct);
+        setIndex((prev) => prev + 1);
+        setCurrentFlag(questions[index + 1].image);
+        setSelected(null);
+        setCorrectAnswer(null);
+        setShowNext(false);
+        setDisabledOptions([]); // Resetăm opțiunile pentru 50/50
+      } else {
+        router.push(`/guess-the-flag/results?score=${score}&mistakes=${encodeURIComponent(JSON.stringify(updatedMistakes))}`);
+      }
+    }, 1500);
+  };
 
-  setTimeout(() => {
-    if (lives - (isCorrect ? 0 : 1) <= 0) {
-      // Stocăm ultima greșeală în query params
-      router.push(`/guess-the-flag/results?score=${score}&mistakes=${encodeURIComponent(JSON.stringify(updatedMistakes))}`);
-      return;
-    }
+  const useFiftyFifty = () => {
+    if (fiftyFiftyUsed) return;
 
-    if (index + 1 < questions.length) {
-      setLastCorrectAnswer(questions[index].correct);
-      setIndex((prev) => prev + 1);
-      setCurrentFlag(questions[index + 1].image);
-      setSelected(null);
-      setCorrectAnswer(null);
-      setShowNext(false);
-      setMistakes(updatedMistakes); // Salvăm array-ul complet în state
-    } else {
-      router.push(`/guess-the-flag/results?score=${score}&mistakes=${encodeURIComponent(JSON.stringify(updatedMistakes))}`);
-    }
-  }, 1500);
-};
+    const incorrectOptions = questions[index]?.options.filter(option => option !== questions[index].correct);
+    const optionsToDisable = incorrectOptions.sort(() => Math.random() - 0.5).slice(0, 2);
 
-  
-
+    setDisabledOptions(optionsToDisable);
+    setFiftyFiftyUsed(true);
+  };
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-900 text-white transition-all duration-500">
@@ -165,46 +176,37 @@ const handleAnswer = (answer) => {
         />
       </div>
 
-      {/* Container invizibil pentru variante - previne mutarea elementelor */}
-      <div className="flex flex-col items-center justify-center w-full mb-10" style={{ minHeight: "120px" }}>
-        <div className="grid grid-cols-2 gap-4 w-[350px]">
-          {questions[index]?.options.map((option) => (
-            <button
-              key={option}
-              onClick={() => handleAnswer(option)}
-              className={`p-4 rounded-lg text-lg font-semibold transition-all duration-500 ease-in-out text-center cursor-pointer ${
-                showNext
-                  ? option === correctAnswer
-                    ? "bg-green-500 text-white"
-                    : option === selected
-                    ? "bg-red-500 text-white"
-                    : "bg-gray-700 text-white"
-                  : "bg-gray-800 hover:bg-gray-700 text-white"
-              }`}
-              style={{
-                minWidth: "150px",
-                maxWidth: "160px",
-                wordBreak: "break-word",
-                minHeight: "88px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center"
-              }}
-            >
-              {option}
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* 50/50 Button */}
+      {!fiftyFiftyUsed && (
+        <button
+          onClick={useFiftyFifty}
+          className="mb-4 px-6 py-3 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-600 transition"
+        >
+          🎲 Use 50/50
+        </button>
+      )}
 
-      {/* Greseli și scor */}
-      <div className="flex justify-center items-center mt-10 gap-4">
-        <div className="flex items-center justify-center text-xl font-bold px-6 py-3 rounded-lg shadow-md w-36 text-center bg-red-700 text-white">
-          ❌ {3 - lives}/3
-        </div>
-        <div className="flex items-center justify-center text-xl font-bold px-6 py-3 rounded-lg shadow-md w-36 text-center bg-blue-700 text-white">
-          🎯 {score}
-        </div>
+      {/* Variante de răspuns */}
+      <div className="grid grid-cols-2 gap-4 w-[350px]">
+        {questions[index]?.options.map((option) => (
+          <button
+            key={option}
+            onClick={() => handleAnswer(option)}
+            disabled={disabledOptions.includes(option)}
+            className={`p-4 rounded-lg text-lg font-semibold transition-all duration-500 ease-in-out text-center cursor-pointer 
+              ${showNext
+                ? option === correctAnswer
+                  ? "bg-green-500 text-white"
+                  : option === selected
+                  ? "bg-red-500 text-white"
+                  : "bg-gray-700 text-white"
+                : disabledOptions.includes(option)
+                ? "bg-gray-500 text-gray-300 cursor-not-allowed"
+                : "bg-gray-800 hover:bg-gray-700 text-white"}`}
+          >
+            {option}
+          </button>
+        ))}
       </div>
     </div>
   );
