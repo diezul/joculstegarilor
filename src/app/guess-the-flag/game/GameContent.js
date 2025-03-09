@@ -208,6 +208,16 @@ export default function GameContent() {
           </button>
         ))}
       </div>
+
+      {/* Badge-uri pentru vieți și scor */}
+      <div className="flex justify-center items-center mt-10 gap-4">
+        <div className="flex items-center text-xl font-bold px-4 py-3 rounded-lg shadow-md w-36 bg-red-700 text-white">
+          ❌ {3 - lives}/3
+        </div>
+        <div className="flex items-center text-xl font-bold px-4 py-3 rounded-lg shadow-md w-36 bg-blue-700 text-white">
+          🎯 {score}
+        </div>
+      </div>
     </div>
   );
 }
