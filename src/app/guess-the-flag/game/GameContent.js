@@ -130,7 +130,7 @@ export default function GameContent() {
           minWidth: "150px",
           maxWidth: "160px",
           wordBreak: "break-word",
-          minHeight: "60px", // 👈 Toate variantele de răspuns au aceeași înălțime
+          minHeight: "88px", // 👈 Toate variantele de răspuns au aceeași înălțime
           display: "flex",
           alignItems: "center",
           justifyContent: "center"
