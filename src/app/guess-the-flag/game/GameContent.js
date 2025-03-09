@@ -25,7 +25,7 @@ export default function GameContent() {
   const [bonusTime, setBonusTime] = useState(null);
   const [timerActive, setTimerActive] = useState(false);
   const [fiftyFiftyUsed, setFiftyFiftyUsed] = useState(false);
-  const [disabledOptions, setDisabledOptions] = useState([]); // Pentru 50/50
+  const [disabledOptions, setDisabledOptions] = useState([]);
 
   useEffect(() => {
     generateQuestions();
@@ -62,7 +62,6 @@ export default function GameContent() {
     let shuffled = [...availableFlags].sort(() => Math.random() - 0.5);
 
     let questionsArray = shuffled.map((country) => {
-      // Filtrăm doar țările din același continent ca răspunsul corect
       let sameContinentCountries = filteredCountries.filter((c) => c.continent === country.continent);
       
       let wrongAnswers = sameContinentCountries
@@ -131,7 +130,7 @@ export default function GameContent() {
         setSelected(null);
         setCorrectAnswer(null);
         setShowNext(false);
-        setDisabledOptions([]); // Resetăm opțiunile pentru 50/50
+        setDisabledOptions([]);
       } else {
         router.push(`/guess-the-flag/results?score=${score}&mistakes=${encodeURIComponent(JSON.stringify(updatedMistakes))}`);
       }
@@ -164,7 +163,7 @@ export default function GameContent() {
         )}
       </div>
 
-      {/* Steag - spațiere mărită față de răspunsuri */}
+      {/* Steag */}
       <div className="relative flex items-center justify-center px-6 mb-6" style={{ height: "250px", maxWidth: "100%" }}>
         <Image
           src={`/flags/${currentFlag}`}
@@ -207,6 +206,16 @@ export default function GameContent() {
             {option}
           </button>
         ))}
+      </div>
+
+      {/* Badge-uri pentru vieți și scor */}
+      <div className="flex justify-center items-center mt-10 gap-4">
+        <div className="flex items-center text-xl font-bold px-4 py-3 rounded-lg shadow-md w-36 bg-red-700 text-white">
+          ❌ {3 - lives}/3
+        </div>
+        <div className="flex items-center text-xl font-bold px-4 py-3 rounded-lg shadow-md w-36 bg-blue-700 text-white">
+          🎯 {score}
+        </div>
       </div>
     </div>
   );
