@@ -200,7 +200,7 @@ export default function GameContent() {
                   ? "bg-red-500 text-white"
                   : "bg-gray-700 text-white"
                 : disabledOptions.includes(option)
-                ? "text-[oklch(0.82 0 0 / 0.37)] bg-[oklch(0.46 0.02 264.36 / 0.82)] cursor-not-allowed"
+                ? "bg-gray-600 text-gray-400 cursor-not-allowed"
                 : "bg-gray-800 hover:bg-gray-700 text-white"}`}
             style={{ minHeight: "88px" }}
           >
