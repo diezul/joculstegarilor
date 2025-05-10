@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import countries from "../../../../../data/countries.json";
+import countries from "../../../../data/countries.json";
 
 export default function GameContent() {
   const params = useSearchParams();
