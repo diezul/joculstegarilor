@@ -10,7 +10,7 @@ export default function Home() {
       <div className="mb-10 w-full flex justify-center">
         {/* The file lives in /public, so just reference it by URL */}
         <Image
-          src="/logo.png"
+          src="/logo-game.png"
           alt="GeoMaster logo"
           width={240}
           height={240}
