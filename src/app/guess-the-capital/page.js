@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 export default function SelectContinentsCapital() {
   const router = useRouter();
-  const continents = ["Europe", "Asia", "North America", "South America", "Oceania"];
+  const continents = ["Europe", "Asia", "Africa", "North America", "South America", "Oceania"];
 
   const [selected, setSelected] = useState([]);   // ← no type annotation
 
