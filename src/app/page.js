@@ -31,12 +31,13 @@ export default function Home() {
           🏳️  Guess the Flag
         </Link>
 
-        <Link
-          href="/guess-the-capital"
-          className="px-6 py-4 rounded-lg bg-green-600 text-center font-semibold hover:bg-green-700 transition"
-        >
-          🏛️  Guess the Capital
-        </Link>
+<Link
+  href="/guess-the-capital"
+  className="px-6 py-4 rounded-lg bg-[#f69220] text-center font-semibold hover:bg-[#e67d00] transition"
+>
+  🏛️  Guess the Capital
+</Link>
+
       </div>
     </main>
   );
