@@ -24,12 +24,13 @@ export default function Home() {
       </p>
 
       <div className="flex flex-col gap-4 w-full max-w-xs">
-        <Link
-          href="/guess-the-flag"
-          className="px-6 py-4 rounded-lg bg-blue-600 text-center font-semibold hover:bg-blue-700 transition"
-        >
-          🏳️  Guess the Flag
-        </Link>
+<Link
+  href="/guess-the-flag"
+  className="px-6 py-4 rounded-lg bg-[#1565a4] text-center font-semibold hover:bg-[#0e4b7a] transition"
+>
+  🏳️  Guess the Flag
+</Link>
+
 
 <Link
   href="/guess-the-capital"
